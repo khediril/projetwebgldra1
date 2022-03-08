@@ -2,10 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class TestController extends AbstractController
 {
@@ -67,6 +68,21 @@ class TestController extends AbstractController
         //$prenom = "Ali";
         //$notes = [12,18,20,5,16,8];
         $rep= $this->render('test/test3.html.twig', ["id" => $id ]);
+        
+        return $rep;
+    }
+    /**
+     * @Route("/somme/{a}/{b}", name="app_somme", requirements={"a"="\d+","b"="\d+"})
+     */
+    public function somme($a,$b,Request $request): Response
+    {
+        
+        $somme = $a + $b;
+        $routeName = $request->attributes->get("_route");
+        $attributs = $request->attributes->all();
+       // dd($a);
+        $rep= $this->render('test/somme.html.twig', ["request"=>$request, "a" => $a,"b"=>$b,"som"=>$somme, "routeName"=>$routeName,"attributs"=> $attributs ]);
+        
         return $rep;
     }
 }
