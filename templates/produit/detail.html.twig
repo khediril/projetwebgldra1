@@ -1,0 +1,43 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Ajout produit
+{% endblock %}
+
+{% block body %}
+
+	<h1>Detail du produit : {{ produit.nom }}</h1>
+
+	<div class="container">
+
+
+		<table class="table table-striped">
+
+			<tbody>
+
+				<tr>
+					<th scope="row">ID</th>
+					<td>{{ produit.id }}</td>
+
+				</tr>
+				<tr>
+					<th>Prix</th>
+					<td>{{ produit.prix }}</td>
+				</tr>
+        	<tr>
+					<th>Description</th>
+					<td>{{ produit.description }}</td>
+				</tr>
+        	<tr>
+					<th>Quantite</th>
+					<td>{{ produit.stock }}</td>
+				</tr>
+        	<tr>
+					<th>Cree le </th>
+					<td>{{ produit.createdAt | date("d/m/Y")}}</td>
+				</tr>
+
+			</tbody>
+		</table>
+	</div>
+
+{% endblock %}
