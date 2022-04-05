@@ -3,12 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Repository\ProduitRepository;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProduitController extends AbstractController
 {
+    
+    private $repos;
+    public function __construct(ProduitRepository $repos)
+    {
+       $this->repos = $repos;
+    }
     /**
      * @Route("/produit/add/{nom}/{prix}/{stock}", name="app_produit_add")
      */
@@ -31,20 +39,29 @@ class ProduitController extends AbstractController
     /**
      * @Route("/produit/list", name="app_produit_list")
      */
-    public function list(): Response
+    public function list(Request $request): Response
     {
-        $repos = $this->getDoctrine()->getRepository(Produit::class);
-        $produits = $repos->findAll();
+        $nb = $request->query->get('nb'); //method GET
+        //$nb = $request->request->get(nb); //method POST
+        // $repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produits = $this->repos->findAll();
        // dd($produits);
-        return $this->render('produit/list.html.twig', ["produits" => $produits]);
+        return $this->render('produit/list.html.twig', ["produits" => $produits,"nb" =>$nb]);
     }
      /**
-     * @Route("/produit/{id}", name="app_produit_detail")
+     * @Route("/produit/{id}", name="app_produit_detail",requirements={"id"="\d+"})
      */
     public function detail($id): Response
     {
-        $repos = $this->getDoctrine()->getRepository(Produit::class);
-        $produit = $repos->find($id);
+        //$repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produit = $this->repos->find($id);
+        if (!$produit) {
+             throw $this->createNotFoundException('Ce produit est inexistant');
+             
+            // the above is just a shortcut for:
+            // throw new NotFoundHttpException('The product does not exist');
+         }
+             
       //  $produits = $repos->chercherParIntervallePrix(10,1000);
        // dd($produits);
        return $this->render('produit/detail.html.twig', ["produit" => $produit]);
@@ -73,8 +90,8 @@ class ProduitController extends AbstractController
     public function update($id,$nouvprix): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $repos = $this->getDoctrine()->getRepository(Produit::class);
-        $produit = $repos->find($id);
+       // $repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produit = $this->repos->find($id);
         $produit->setPrix($nouvprix);
 
         $entityManager->persist($produit);
@@ -87,4 +104,32 @@ class ProduitController extends AbstractController
         //  $produits = $repos->chercherParIntervallePrix(10,1000);
        // dd($produits);
     }
+    /**
+     * @Route("/produit/form", name="app_produit_chercher")
+     */
+    public function chercher(): Response
+    {
+        return $this->render('produit/chercher.html.twig', []);
+    }
+        /**
+     * @Route("/produit/chercher", name="app_chercher")
+     */
+    public function chercherProduit(Request $request): Response
+    {
+        $id = $request->request->get('id'); //method GET
+        //dd($request);
+        //$repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produit = $this->repos->find($id);
+        if (!$produit) {
+             throw $this->createNotFoundException('Ce produit est inexistant');
+             
+            // the above is just a shortcut for:
+            // throw new NotFoundHttpException('The product does not exist');
+         }
+             
+      //  $produits = $repos->chercherParIntervallePrix(10,1000);
+       // dd($produits);
+       return $this->render('produit/detail.html.twig', ["produit" => $produit]);
+    }  
+
 }
