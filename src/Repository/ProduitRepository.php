@@ -73,7 +73,7 @@ class ProduitRepository extends ServiceEntityRepository
         ;
     }
     */
-    public function chercherProduitParIntervallPrix($pmin,$pmax)
+ /*   public function chercherProduitParIntervallPrix($pmin,$pmax)
     {
         return $this->createQueryBuilder('p')
             ->andWhere('p.exampleField = :val')
@@ -83,5 +83,23 @@ class ProduitRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }*/
+    public function findByPriceInterval($pmin,$pmax)
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery(
+            'SELECT p
+            FROM App\Entity\Produit p
+            WHERE p.prix >= :pmin and p.prix <= :pmax
+            ORDER BY p.prix ASC'
+        )->setParameter('pmin', $pmin)
+         ->setParameter('pmax', $pmax);
+
+        // returns an array of Product objects
+        return $query->getResult();
+
     }
+
+  
 }

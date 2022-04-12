@@ -35,7 +35,10 @@
 					<th>Cree le </th>
 					<td>{{ produit.createdAt | date("d/m/Y")}}</td>
 				</tr>
-
+			<tr>
+					<th>Categorie</th>
+					<td>{{ produit.categorie.nom }} </td>
+				</tr>
 			</tbody>
 		</table>
 	</div>

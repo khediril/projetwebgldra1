@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Produit;
 use App\Repository\ProduitRepository;
+use App\Repository\CategorieRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,14 +15,16 @@ class ProduitController extends AbstractController
 {
     
     private $repos;
-    public function __construct(ProduitRepository $repos)
+    private $doctrine;
+    public function __construct(ProduitRepository $repos,ManagerRegistry $doctrine)
     {
        $this->repos = $repos;
+       $this->doctrine = $doctrine;
     }
     /**
-     * @Route("/produit/add/{nom}/{prix}/{stock}", name="app_produit_add")
+     * @Route("/produit/add/{nom}/{prix}/{stock}/{idc}", name="app_produit_add")
      */
-    public function add($nom,$prix,$stock): Response
+    public function add($nom,$prix,$stock,$idc,CategorieRepository $reposCateg): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $produit = new Produit();
@@ -29,6 +33,8 @@ class ProduitController extends AbstractController
         $produit->setStock($stock);
         $produit->setDescription("ce produit est bon");
         $produit->setCreatedAt(new \DateTime());
+
+        $produit->setCategorie($reposCateg->find($idc));
         $entityManager->persist($produit);
         $entityManager->flush();
 
@@ -55,6 +61,7 @@ class ProduitController extends AbstractController
     {
         //$repos = $this->getDoctrine()->getRepository(Produit::class);
         $produit = $this->repos->find($id);
+        $categ = $produit->getCategorie();// en cas de besoin
         if (!$produit) {
              throw $this->createNotFoundException('Ce produit est inexistant');
              
@@ -72,7 +79,7 @@ class ProduitController extends AbstractController
     public function delete($id): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-        $repos = $this->getDoctrine()->getRepository(Produit::class);
+        $repos = $this->doctrine()->getRepository(Produit::class);
         $produit = $repos->find($id);
         $entityManager->remove($produit);
         $entityManager->flush();
@@ -89,7 +96,7 @@ class ProduitController extends AbstractController
      */
     public function update($id,$nouvprix): Response
     {
-        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager = $this->doctrine->getManager();
        // $repos = $this->getDoctrine()->getRepository(Produit::class);
         $produit = $this->repos->find($id);
         $produit->setPrix($nouvprix);
@@ -131,5 +138,26 @@ class ProduitController extends AbstractController
        // dd($produits);
        return $this->render('produit/detail.html.twig', ["produit" => $produit]);
     }  
+     /**
+     * @Route("/produit/chercher/{pmin}/{pmax}", name="app_chercher_interval_prix")
+     */
+    public function chercherProduitIntervalPrix(Request $request,$pmin,$pmax): Response
+    {
+       
+        
+        //$repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produits = $this->repos->findByPriceInterval($pmin,$pmax);
+       /* if (!$produit) {
+             throw $this->createNotFoundException('Ce produit est inexistant');
+             
+            // the above is just a shortcut for:
+            // throw new NotFoundHttpException('The product does not exist');
+         }*/
+             
+      //  $produits = $repos->chercherParIntervallePrix(10,1000);
+       // dd($produits);
+       return $this->render('produit/rechercheParPrix.html.twig', ["produits" => $produits,"pmin" => $pmin,"pmax" => $pmax]);
+    }  
+
 
 }

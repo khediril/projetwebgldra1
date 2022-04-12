@@ -1,11 +1,12 @@
 {% extends 'base2.html.twig' %}
 
-{% block title %}Ajout produit{% endblock %}
+{% block title %}Recherche{% endblock %}
 
 {% block body %}
 
-<h1>Produits</h1>
-<h2>nb = {{ nb }} </h2>
+<h1>Resultat de la Recherche </h1>
+<h2>Prix Minimum = {{ pmin }} </h2>
+<h2>Prix Maximum = {{ pmax }} </h2>
 
 <div class="container">
    {% for message in app.flashes('notice') %}
@@ -22,7 +23,6 @@
       <th scope="col">Nom</th>
       <th scope="col">Prix</th>
       <th scope="col">Description</th>
-      <th scope="col">Categorie</th>
       <th scope="col">Detail</th>
        <th scope="col">Supprimer</th>
     </tr>
@@ -34,7 +34,6 @@
       <td>{{ p.nom }}</td>
       <td>{{ p.prix }}</td>
       <td>{{ p.description }}</td>
-      <td>{{ p.categorie.nom }}</td>
       <td><a href="{{ path('app_produit_detail',{'id':p.id})}}">detail</a></td>
      <td><a href="{{ path('app_produit_delete',{'id':p.id})}}">Supprimer</a></td>
     </tr>
