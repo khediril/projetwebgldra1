@@ -95,6 +95,9 @@
     "egulias/email-validator": {
         "version": "3.1.2"
     },
+    "fakerphp/faker": {
+        "version": "v1.9.2"
+    },
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.6"
     },
@@ -535,5 +538,23 @@
     },
     "webmozart/assert": {
         "version": "1.10.0"
+    },
+    "zenstruck/assert": {
+        "version": "v1.0.1"
+    },
+    "zenstruck/callback": {
+        "version": "v1.4.2"
+    },
+    "zenstruck/foundry": {
+        "version": "1.18",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "1.10",
+            "ref": "934cdd918703a7fcfc3ef91723a2eac42a0f7690"
+        },
+        "files": [
+            "config/packages/zenstruck_foundry.yaml"
+        ]
     }
 }

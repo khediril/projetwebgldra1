@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProduitRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -47,6 +49,16 @@ class Produit
      * @ORM\JoinColumn(nullable=false)
      */
     private $categorie;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Fournisseur::class, mappedBy="produits")
+     */
+    private $fournisseurs;
+
+    public function __construct()
+    {
+        $this->fournisseurs = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -123,5 +135,36 @@ class Produit
         $this->categorie = $categorie;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Fournisseur>
+     */
+    public function getFournisseurs(): Collection
+    {
+        return $this->fournisseurs;
+    }
+
+    public function addFournisseur(Fournisseur $fournisseur): self
+    {
+        if (!$this->fournisseurs->contains($fournisseur)) {
+            $this->fournisseurs[] = $fournisseur;
+            $fournisseur->addProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFournisseur(Fournisseur $fournisseur): self
+    {
+        if ($this->fournisseurs->removeElement($fournisseur)) {
+            $fournisseur->removeProduit($this);
+        }
+
+        return $this;
+    }
+    public function __toString(): ?string
+    {
+       return $this->nom;
     }
 }

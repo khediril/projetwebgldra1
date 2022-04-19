@@ -1,0 +1,69 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Fournisseur{% endblock %}
+
+{% block body %}
+<div class="container">
+    
+
+    <h1>Fournisseur</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ fournisseur.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ fournisseur.nom }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ fournisseur.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ fournisseur.email }}</td>
+            </tr>
+            <tr>
+                <th>Telephone</th>
+                <td>{{ fournisseur.telephone }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <h2>Liste des produits de ce fournisseur</h2>
+   <table class="table table-success table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">NOM</th>
+      <th scope="col">PRIX</th>
+      <th scope="col">DESCRIPTION</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for prod in fournisseur.produits %}
+        
+    <tr>
+      <th scope="row">{{ prod.id }} </th>
+      <td>{{ prod.nom }} </td>
+      <td>{{ prod.prix }} </td>
+      <td>{{ prod.Description }} </td>
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+    
+    
+  
+
+    
+    <a href="{{ path('app_fournisseur_index') }}" class="btn btn-primary">back to list</a>
+
+    <a href="{{ path('app_fournisseur_edit', {'id': fournisseur.id}) }}" class="btn btn-primary">edit</a>
+
+    {{ include('fournisseur/_delete_form.html.twig') }}
+</div>
+{% endblock %}

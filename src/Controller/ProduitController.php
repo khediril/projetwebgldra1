@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Produit;
+use App\Entity\Categorie;
 use App\Repository\ProduitRepository;
 use App\Repository\CategorieRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,7 +44,7 @@ class ProduitController extends AbstractController
         ]);
     }
     /**
-     * @Route("/produit/list", name="app_produit_list")
+     * @Route("/", name="app_produit_list")
      */
     public function list(Request $request): Response
     {
@@ -53,6 +54,20 @@ class ProduitController extends AbstractController
         $produits = $this->repos->findAll();
        // dd($produits);
         return $this->render('produit/list.html.twig', ["produits" => $produits,"nb" =>$nb]);
+    }
+    /**
+     * @Route("/prod/{id}", name="app_list_prod_categ")
+     */
+    public function listProdParCateg($id): Response
+    {
+         $categorie= $this->doctrine->getRepository(Categorie::class)->find($id);
+        // $produits = $categorie->getProduits();
+         //$nb = $request->query->get('nb'); //method GET
+        //$nb = $request->request->get(nb); //method POST
+        // $repos = $this->getDoctrine()->getRepository(Produit::class);
+        $produits = $this->repos->findBy(['categorie'=> $categorie]);
+       // dd($produits);
+        return $this->render('produit/listparCateg.html.twig', ["produits" => $produits,"categorie" =>$categorie]);
     }
      /**
      * @Route("/produit/{id}", name="app_produit_detail",requirements={"id"="\d+"})
