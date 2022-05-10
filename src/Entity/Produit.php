@@ -6,6 +6,7 @@ use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ProduitRepository::class)
@@ -31,6 +32,12 @@ class Produit
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Your first name must be at least {{ limit }} characters long",
+     *      maxMessage = "Your first name cannot be longer than {{ limit }} characters"
+     * )
      */
     private $description;
 
@@ -41,6 +48,11 @@ class Produit
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 5,
+     *      max = 100,
+     *      notInRangeMessage = "Le stock doit etre entre {{ min }}  et {{ max }} ",
+     * )
      */
     private $stock;
 
@@ -55,9 +67,32 @@ class Produit
      */
     private $fournisseurs;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comprod::class, mappedBy="produit")
+     */
+    private $comprods;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $brochureFilename;
+
+    public function getBrochureFilename()
+    {
+        return $this->brochureFilename;
+    }
+
+    public function setBrochureFilename($brochureFilename)
+    {
+        $this->brochureFilename = $brochureFilename;
+
+        return $this;
+    }
+
     public function __construct()
     {
         $this->fournisseurs = new ArrayCollection();
+        $this->comprods = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,5 +201,35 @@ class Produit
     public function __toString(): ?string
     {
        return $this->nom;
+    }
+
+    /**
+     * @return Collection<int, Comprod>
+     */
+    public function getComprods(): Collection
+    {
+        return $this->comprods;
+    }
+
+    public function addComprod(Comprod $comprod): self
+    {
+        if (!$this->comprods->contains($comprod)) {
+            $this->comprods[] = $comprod;
+            $comprod->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComprod(Comprod $comprod): self
+    {
+        if ($this->comprods->removeElement($comprod)) {
+            // set the owning side to null (unless already changed)
+            if ($comprod->getProduit() === $this) {
+                $comprod->setProduit(null);
+            }
+        }
+
+        return $this;
     }
 }

@@ -3,13 +3,15 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\Comprod;
 use App\Entity\Produit;
+use App\Entity\Commande;
 use App\Entity\Categorie;
 use App\Entity\Fournisseur;
-use Doctrine\Persistence\ObjectManager;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Zenstruck\Foundry\Factory as Factory2;
 use Zenstruck\Foundry\faker;
+use Doctrine\Persistence\ObjectManager;
+use Zenstruck\Foundry\Factory as Factory2;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 
 class AppFixtures extends Fixture
 {
@@ -39,12 +41,27 @@ class AppFixtures extends Fixture
                 $manager->persist($produit);
             }
         }
+        $manager->flush();
+        $produits = $manager->getRepository(Produit::class)->findAll();
+        $nb = count($produits);
 
-
-
-        
-        
-
+        for($i=0;$i<5;$i++)
+        {
+            $commande = new Commande();
+            $commande->setCreatedAt(new \DateTime())
+                     ->setEtat(false);
+            $manager->persist($commande);
+            for($j=0;$j<4;$j++)
+            {
+                $comprod = new Comprod();
+                $produit = $produits[rand(0,$nb)];
+                $comprod->setCommande($commande)
+                        ->setProduit($produit)
+                        ->setQuantite(rand(1,10))
+                        ->setPrix($produit->getPrix());
+                $manager->persist($comprod);
+            }
+        }
         $manager->flush();
     }
 }

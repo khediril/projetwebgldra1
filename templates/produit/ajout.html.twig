@@ -1,0 +1,29 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Ajout d'un nouveau produit{% endblock %}
+
+{% block body %}
+<style>
+label.required:before {
+    content: "*";
+}
+</style>
+<div class="container">
+    {{ form_start(monform) }}
+  
+ <small> {{ form_label(monform.nom) }}</small>
+  {{ form_help(monform.nom) }}
+  {{ form_widget(monform.nom) }}
+  {{ form_errors(monform.nom) }}
+  
+  {{ form_row(monform.prix) }}
+  {{ form_row(monform.description) }}
+  {{ form_row(monform.stock) }}
+  {{ form_row(monform.categorie) }}
+  {{ form_row(monform.brochure) }}
+  <input type="submit" value="Ajouter">
+
+  {{ form_end(monform) }}
+</div>
+  
+{% endblock %}

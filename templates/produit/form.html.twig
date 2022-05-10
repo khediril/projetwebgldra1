@@ -1,0 +1,17 @@
+{% extends 'base2.html.twig' %}
+
+{% block title %}Ajout d'un nouveau produit{% endblock %}
+
+{% block body %}
+<style>
+label.required:before {
+    content: "*";
+}
+</style>
+<h1>Formulaire non mappe</h1>
+<div class="container">
+    {{ form(form) }}
+  
+ </div>
+  
+{% endblock %}
