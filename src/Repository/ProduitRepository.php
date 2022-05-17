@@ -84,6 +84,17 @@ class ProduitRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }*/
+    public function findByName($ch)
+    {
+        $ch = '%'.$ch.'%';
+        return $this->createQueryBuilder('p')
+        ->andWhere('p.nom like :val')
+        ->setParameter('val', $ch)
+        ->orderBy('p.id', 'ASC')
+        ->getQuery()
+        ->getResult();
+
+    }
     public function findByPriceInterval($pmin,$pmax)
     {
         $entityManager = $this->getEntityManager();

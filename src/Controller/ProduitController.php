@@ -276,4 +276,17 @@ class ProduitController extends AbstractController
         ]);
         // ... render the form
     }
+     /**
+     * @Route("/produit/search", name="app_search")
+     */
+    public function search(Request $request): Response
+    {
+        $ch = $request->get("search");
+        $produits=$this->repos->findByName($ch);
+        //dd($ch);
+        return $this->renderForm('produit/search.html.twig', [
+            'produits' => $produits,
+        ]);
+        // ... render the form
+    }
 }
