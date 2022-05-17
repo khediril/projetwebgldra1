@@ -19,6 +19,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 
 class ProduitController extends AbstractController
 {
@@ -182,9 +183,11 @@ class ProduitController extends AbstractController
     }
     /**
      * @Route("/produit/ajout", name="app_ajout")
+     * @IsGranted("ROLE_SUPER_ADMIN")
      */
     public function ajout(Request $request, SluggerInterface $slugger): Response
     {
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
         $produit = new Produit();
         $produit->setNom('toto');
       /*  $form = $this->createFormBuilder($produit)
