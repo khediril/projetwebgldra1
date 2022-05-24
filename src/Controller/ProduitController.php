@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Produit;
 use App\Entity\Categorie;
 use App\Form\Produit2Type;
+use App2\services\MessageGenerator;
 use App\Repository\ProduitRepository;
 use App\Repository\CategorieRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -18,8 +19,8 @@ use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProduitController extends AbstractController
 {
@@ -54,14 +55,15 @@ class ProduitController extends AbstractController
     /**
      * @Route("/", name="app_produit_list")
      */
-    public function list(Request $request): Response
+    public function list(Request $request,MessageGenerator $mg): Response
     {
+        $message= $mg->getHappyMessage();
         $nb = $request->query->get('nb'); //method GET
         //$nb = $request->request->get(nb); //method POST
         // $repos = $this->getDoctrine()->getRepository(Produit::class);
         $produits = $this->repos->findAll();
         // dd($produits);
-        return $this->render('produit/list.html.twig', ["produits" => $produits,"nb" =>$nb]);
+        return $this->render('produit/list.html.twig', ["produits" => $produits,"nb" =>$nb,"message" => $message]);
     }
     /**
      * @Route("/prod/{id}", name="app_list_prod_categ")
